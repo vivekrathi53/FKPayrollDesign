@@ -105,19 +105,7 @@ public class HourlyEmployee implements Employee
         }
     }
 
-    public int submitToCommissionAccountant(SalesReceipt salesReceipt) throws Exception {
-        if(commissionAccountant.checkSalesReceipt(this,salesReceipt))
-        {
-            // accepted;
-            commissionAccountant.submitSalesReceipt(this,salesReceipt);
-            return 1;
-        }
-        else
-        {
-            return 0;
-            // rejected
-        }
-    }
+
 
 
 }

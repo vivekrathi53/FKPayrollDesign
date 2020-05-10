@@ -7,6 +7,10 @@ import java.util.Date;
 
 public class MembershipFee implements ServiceFee
 {
+    public MembershipFee(double feeRate) {
+        this.feeRate = feeRate;
+    }
+
     private double feeRate;// per day
 
     @Override

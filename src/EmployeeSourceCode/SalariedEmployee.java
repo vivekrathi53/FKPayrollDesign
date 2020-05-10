@@ -88,17 +88,5 @@ public class SalariedEmployee implements Employee
         SalariedEmployee.salaryAccountant = salaryAccountant;
     }
 
-    public int submitToCommissionAccountant(SalesReceipt salesReceipt) throws Exception {
-        if(commissionAccountant.checkSalesReceipt(this,salesReceipt))
-        {
-            // accepted;
-            commissionAccountant.submitSalesReceipt(this,salesReceipt);
-            return 1;
-        }
-        else
-        {
-            // rejected
-            return 0;
-        }
-    }
+
 }

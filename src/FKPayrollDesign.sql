@@ -34,7 +34,7 @@ CREATE TABLE `EmployeeHourlySalaryTable` (
 
 LOCK TABLES `EmployeeHourlySalaryTable` WRITE;
 /*!40000 ALTER TABLE `EmployeeHourlySalaryTable` DISABLE KEYS */;
-INSERT INTO `EmployeeHourlySalaryTable` VALUES ('vivekrathi53',100),('vivekrathi',10);
+INSERT INTO `EmployeeHourlySalaryTable` VALUES ('Hvivek',100);
 /*!40000 ALTER TABLE `EmployeeHourlySalaryTable` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -57,7 +57,7 @@ CREATE TABLE `EmployeeMonthlySalaryTable` (
 
 LOCK TABLES `EmployeeMonthlySalaryTable` WRITE;
 /*!40000 ALTER TABLE `EmployeeMonthlySalaryTable` DISABLE KEYS */;
-INSERT INTO `EmployeeMonthlySalaryTable` VALUES ('ritikarathi',30000);
+INSERT INTO `EmployeeMonthlySalaryTable` VALUES ('SRitika',100);
 /*!40000 ALTER TABLE `EmployeeMonthlySalaryTable` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -83,7 +83,7 @@ CREATE TABLE `EmployeeTable` (
 
 LOCK TABLES `EmployeeTable` WRITE;
 /*!40000 ALTER TABLE `EmployeeTable` DISABLE KEYS */;
-INSERT INTO `EmployeeTable` VALUES ('vivek','vivekrathi53','1999-12-21 06:15:00',1,0),('ritika','ritikarathi','2006-01-19 04:30:00',1,0),('Vivek2','vivekrathi','2019-12-20 18:30:00',1,0);
+INSERT INTO `EmployeeTable` VALUES ('Vivek','Hvivek','2020-04-27 03:30:00',1,10),('Ritika','SRitika','2020-04-28 03:30:00',1,0);
 /*!40000 ALTER TABLE `EmployeeTable` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -107,6 +107,7 @@ CREATE TABLE `SalesReceiptTable` (
 
 LOCK TABLES `SalesReceiptTable` WRITE;
 /*!40000 ALTER TABLE `SalesReceiptTable` DISABLE KEYS */;
+INSERT INTO `SalesReceiptTable` VALUES ('SRitika','2020-05-10 06:30:00',1000000);
 /*!40000 ALTER TABLE `SalesReceiptTable` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -131,7 +132,7 @@ CREATE TABLE `TimeCardTable` (
 
 LOCK TABLES `TimeCardTable` WRITE;
 /*!40000 ALTER TABLE `TimeCardTable` DISABLE KEYS */;
-INSERT INTO `TimeCardTable` VALUES ('vivekrathi53','2020-05-09 18:30:00','2020-05-09 03:30:00','2020-05-09 12:30:00');
+INSERT INTO `TimeCardTable` VALUES ('Hvivek','2020-05-09 18:30:00','2020-05-09 03:30:00','2020-05-09 12:30:00');
 /*!40000 ALTER TABLE `TimeCardTable` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -144,4 +145,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-05-10 19:03:11
+-- Dump completed on 2020-05-10 22:45:41

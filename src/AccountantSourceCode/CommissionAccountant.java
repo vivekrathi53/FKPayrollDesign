@@ -10,15 +10,15 @@ public class CommissionAccountant implements Accountant
     {
         this.dbconnector=dbconnector;
     }
-    public boolean checkSalesReceipt(Employee employee, SalesReceipt salesReceipt)
+    public boolean checkSalesReceipt(String employeeId, SalesReceipt salesReceipt)
     {
         return true; // if valid and accepted timeCard;
         //return false;// if invalid or rejected timeCard;
     }
-    public void submitSalesReceipt(Employee employee,SalesReceipt salesReceipt) throws Exception {
+    public void submitSalesReceipt(String employeeId,SalesReceipt salesReceipt) throws Exception {
 
         // call DBconnector
-        dbconnector.insertSalesReceipt(salesReceipt,employee);
+        dbconnector.insertSalesReceipt(salesReceipt,employeeId);
     }
 
 }

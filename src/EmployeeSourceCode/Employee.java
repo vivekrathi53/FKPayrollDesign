@@ -1,6 +1,9 @@
 package EmployeeSourceCode;
 
 import java.sql.Timestamp  ;
+
+import AccountantSourceCode.CommissionAccountant;
+import AccountantSourceCode.Miscellaneous.SalesReceipt;
 import AccountantSourceCode.PaymentRelatedClasses.*;
 public interface Employee
 {

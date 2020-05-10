@@ -9,7 +9,7 @@ import EmployeeSourceCode.*;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class HourlyEmpSqlConnector extends MySqlConnector implements TimeCardDBConnector
+public class HourlyEmpSqlConnector implements TimeCardDBConnector, SaleReceiptsDBConnector, DBConnector
 {
     String url;
     Connection connection;
@@ -127,5 +127,80 @@ public class HourlyEmpSqlConnector extends MySqlConnector implements TimeCardDBC
         return resultSet.getDouble("HourlyRate");
     }
 
+    public static int convertPaymentMode(PaymentMode paymentMode)
+    {
+        if(paymentMode instanceof BankTransfer)
+            return 1;
+        else if(paymentMode instanceof PaymentByMail)
+            return 2;
+        else if(paymentMode instanceof PaymentByPickup)
+            return 3;
+        return 0;// illegal paymentMode
+    }
+    public static PaymentMode getPaymentMode(int id)
+    {
+        if(id==1)
+            return new BankTransfer();
+        else if(id==2)
+            return new PaymentByMail();
+        else if(id==3)
+            return new PaymentByMail();
+        return null;// illegal id
+    }
+    /*@Override
+    public void deleteEmployee(Employee e) throws SQLException {
+
+    }*/
+
+    @Override
+    public double getEmployeeDues(Employee employee) throws Exception {
+        String query = "SELECT * FROM EmployeeTable WHERE EmployeeID = '"+employee.getEmployeeId()+"'";
+        PreparedStatement preStat = connection.prepareStatement(query);
+        ResultSet resultSet = preStat.executeQuery();
+        resultSet.next();
+        return resultSet.getDouble("DueCharges");
+    }
+
+    @Override
+    public void setEmployeeDues(Employee employee,double dueAmount) throws Exception {
+        String query = "UPDATE EmployeeTable SET DueCharges = "+dueAmount+" WHERE EmployeeID = '"+employee.getEmployeeId()+"'";
+        PreparedStatement preStat = connection.prepareStatement(query);
+        preStat.executeUpdate();
+        return;
+    }
+
+    @Override
+    public void insertSalesReceipt(SalesReceipt salesReceipt, String employeeId) throws SQLException
+    {
+        String query = "INSERT INTO SalesReceiptTable VALUES (?, ?, ?)";
+        PreparedStatement preStat = connection.prepareStatement(query);
+        preStat.setString(1, employeeId);
+        preStat.setTimestamp(2, salesReceipt.getSaleDate());
+        preStat.setDouble(3, salesReceipt.getAmountOfSale());
+        preStat.executeUpdate();
+    }
+
+    @Override
+    public ArrayList<SalesReceipt> getEmployeeSalesReceipt(Employee employee) throws Exception {
+        String query = "SELECT * FROM SalesReceiptTable WHERE EmployeeID = "+employee.getEmployeeId();
+        PreparedStatement preStat = connection.prepareStatement(query);
+        ResultSet resultSet = preStat.executeQuery();
+        ArrayList<SalesReceipt> saleReceiptList = new ArrayList<>();
+        while(resultSet.next())
+        {
+            saleReceiptList.add(new SalesReceipt(resultSet.getTimestamp("saleDate"),resultSet.getDouble("amountOfSale")));
+        }
+        return saleReceiptList;
+    }
+
+    @Override
+    public Timestamp getEmployeeJoiningDate(Employee employee) throws SQLException
+    {
+        String query = "SELECT * FROM EmployeeTable WHERE EmployeeID = "+employee.getEmployeeId();
+        PreparedStatement preStat = connection.prepareStatement(query);
+        ResultSet resultSet = preStat.executeQuery();
+        resultSet.next();
+        return resultSet.getTimestamp("JoiningDate");
+    }
 
 }

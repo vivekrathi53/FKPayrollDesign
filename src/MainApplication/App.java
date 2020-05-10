@@ -2,13 +2,15 @@ package MainApplication;
 
 import AccountantSourceCode.CommissionAccountant;
 import AccountantSourceCode.HourlyPayAccountant;
+import AccountantSourceCode.Miscellaneous.SalesReceipt;
 import AccountantSourceCode.Miscellaneous.TimeCard;
 import AccountantSourceCode.PaymentRelatedClasses.BankTransfer;
 import AccountantSourceCode.SalaryAccountant;
+import AccountantSourceCode.ServiceFeeClasses.FestivalFee;
+import AccountantSourceCode.ServiceFeeClasses.MembershipFee;
+import AccountantSourceCode.ServiceFeeClasses.UnionFee;
 import AccountantSourceCode.TimeCardAccountant;
-import DatabaseManagerSourceCode.HourlyEmpSqlConnector;
-import DatabaseManagerSourceCode.SalariedEmpSqlConnector;
-import DatabaseManagerSourceCode.TimeCardDBConnector;
+import DatabaseManagerSourceCode.*;
 import EmployeeSourceCode.*;
 
 import java.sql.*;
@@ -42,13 +44,8 @@ public class App  {
         HourlyEmployee.sethourlyPayAccountant(hourlyPayAccountant);
         SalariedEmployee.setCommissionAccountant(commissionAccountant);
         SalariedEmployee.setSalaryAccountant(salaryAccountant);
+        EmployeeUnion employeeUnion = new EmployeeUnion();
 
-        try {
-            salaryAccountant.doDailyWork();
-            hourlyPayAccountant.doDailyWork();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         Scanner sc = new Scanner(System.in);
         while(true)
         {
@@ -57,46 +54,82 @@ public class App  {
             System.out.println("2. Insert New Salary Employee");
             System.out.println("3. Insert a new TimeCard");
             System.out.println("4. Insert a new salesReceipt");
-            //System.out.println("5. Insert a new time card");
+            System.out.println("5. Change employee details ");
             System.out.println("6. Insert a service charge on employee");
             System.out.println("7. Run Payroll For Today");
             int ty=sc.nextInt();
-            try
-            {
-                if(ty==1)
-                {
-                    insertNewHourlyEmployee(sc,hourlyEmpSqlConnector);
+            try {
+                    if (ty == 1) {
+                        insertNewHourlyEmployee(sc, hourlyEmpSqlConnector);
+                    } else if (ty == 2) {
+                        insertNewSalaryEmployee(sc, salariedEmpSqlConnector);
+                    } else if (ty == 3) {
+                        insertNewTimeCard(sc, hourlyEmpSqlConnector);
+                    } else if (ty == 4) {
+                        insertNewSalesReceipt(sc, hourlyEmpSqlConnector, commissionAccountant);
+                    } else if (ty == 6) {
+                        System.out.println("Enter EmployeeID");
+                        String empId = sc.next();
+                        if (empId.charAt(0) == 'H') {
+                            HourlyEmployee hourlyEmployee = (HourlyEmployee) hourlyEmpSqlConnector.getEmployee(empId);
+                            deductServiceCharge(sc, hourlyEmployee, employeeUnion);
+                        } else if (empId.charAt(0) == 'S') {
+                            SalariedEmployee salariedEmployee = (SalariedEmployee) salariedEmpSqlConnector.getEmployee(empId);
+                            deductServiceCharge(sc, salariedEmployee, employeeUnion);
+                        }
+                    }
+                    else if(ty==7)
+                    {
+                        salaryAccountant.doDailyWork();
+                        hourlyPayAccountant.doDailyWork();
+                    }
                 }
-                else if(ty==2)
-                {
-                    insertNewSalaryEmployee(sc,salariedEmpSqlConnector);
-                }
-                else if(ty==3)
-                {
-                    insertNewTimeCard(sc,hourlyEmpSqlConnector);
-                }
-                else if(ty==4)
-                {
-
-                }
-                else if(ty==5)
-                {
-
-                }
-                else if(ty==6)
-                {
-
-                }
-                else if(ty==7)
-                {
-
-                }
-            }
-            catch (Exception exception)
+            catch(Exception exception)
             {
                 exception.printStackTrace();
             }
         }
+    }
+
+
+    private static void deductServiceCharge(Scanner sc, Employee employee, EmployeeUnion employeeUnion) throws Exception {
+        System.out.println("Select Service Charge Type");
+        System.out.println("1. FestivalFee");
+        System.out.println("2. MembershipFee");
+        System.out.println("3. UnionRoutineFee");
+        int type=sc.nextInt();
+        System.out.println("Enter StartDateOfCharges");
+        Timestamp startDate = inputTimestamp(sc);
+        System.out.println("Enter EndDateOfCharges");
+        Timestamp endDate = inputTimestamp(sc);
+        System.out.println("Enter Rate of Charges");
+        double rate = sc.nextDouble();
+        if(type==1)
+        {
+            employeeUnion.deductServiceCharge(employee,new FestivalFee(rate),startDate,endDate);
+        }
+        else if(type==2)
+        {
+            employeeUnion.deductServiceCharge(employee,new MembershipFee(rate),startDate,endDate);
+        }
+        else if(type==3)
+        {
+            employeeUnion.deductServiceCharge(employee,new UnionFee(rate),startDate,endDate);
+        }
+    }
+
+    private static void insertNewSalesReceipt(Scanner sc, SaleReceiptsDBConnector dbConnector, CommissionAccountant commissionAccountant) throws Exception {
+        System.out.println("Enter EmployeeID");
+        String empId = sc.next();
+        System.out.println("Enter Sale Date");
+        Timestamp saleDate = inputTimestamp(sc);
+        System.out.println("Enter sale amount");
+        double amount = sc.nextDouble();
+        SalesReceipt salesReceipt = new SalesReceipt(saleDate,amount);
+        if(commissionAccountant.checkSalesReceipt(empId,salesReceipt))
+            commissionAccountant.submitSalesReceipt(empId,salesReceipt);
+        else
+            throw new Exception("Invalid Sales Receipt");
     }
 
     private static void insertNewTimeCard(Scanner sc, TimeCardDBConnector timeCardDBConnector) throws Exception {

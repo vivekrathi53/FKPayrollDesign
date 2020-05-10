@@ -7,6 +7,6 @@ import java.util.ArrayList;
 
 public interface SaleReceiptsDBConnector
 {
-    public void insertSalesReceipt(SalesReceipt salesReceipt, Employee employee) throws Exception;
+    public void insertSalesReceipt(SalesReceipt salesReceipt, String employeeID) throws Exception;
     public ArrayList<SalesReceipt> getEmployeeSalesReceipt(Employee employee) throws Exception;
 }
