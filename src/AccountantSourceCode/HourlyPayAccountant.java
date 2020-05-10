@@ -30,6 +30,11 @@ public class HourlyPayAccountant implements Accountant
     {
 
     }*/
+    public void deduceFeeCharges(Employee employee,double amount) throws Exception {
+        double dues = dbconnector.getEmployeeDues(employee);
+        dues+=amount;
+        dbconnector.setEmployeeDues(employee,dues);
+    }
     public PayCheque generatePayCheque(Employee employee, double amount, Timestamp issueDate)
     {
         return new PayCheque(amount , employee.getEmployeeId(), issueDate);
@@ -51,15 +56,21 @@ public class HourlyPayAccountant implements Accountant
             totalAmount += min(hoursWorked,dailyWorkhours)*hourlyrate;
             totalAmount += max(hoursWorked-dailyWorkhours,0)*hourlyrate*overtimeMultiple;
         }
-        return totalAmount;
+        double dueCharges = dbconnector.getEmployeeDues(employee);
+        return totalAmount - dueCharges;
     }
     public void payEmployee(Employee employee) throws Exception {
         // make employee payment
         double amount = estimatePay((HourlyEmployee) employee);
-        if(amount!=0)
+        if(amount>0)
         {
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             employee.getPaymentMode().pay(generatePayCheque(employee,amount,timestamp));
+            dbconnector.setEmployeeDues(employee,0);
+        }
+        else if(amount<0)
+        {
+            throw new Exception("Negative pay!! Large Dues of employee");
         }
     }
     public void doDailyWork() throws Exception {

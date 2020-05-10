@@ -5,17 +5,17 @@ import DatabaseManagerSourceCode.*;
 import AccountantSourceCode.PaymentRelatedClasses.*;
 public class TimeCardAccountant implements Accountant
 {
-    private DBConnector dbconnector;
+    private TimeCardDBConnector dbconnector;
     public boolean checkTimeCard(HourlyEmployee hourlyEmployee, TimeCard timeCard)
     {
         return true; // if valid and accepted timeCard;
         //return false;// if invalid or rejected timeCard;
     }
-    public void submitTimeCard(HourlyEmployee hourlyEmployee,TimeCard timeCard)
-    {
+    public void submitTimeCard(HourlyEmployee hourlyEmployee,TimeCard timeCard) throws Exception {
         // call DBconnector
+        dbconnector.insertTimeCard(timeCard,hourlyEmployee);
     }
-    public TimeCardAccountant(DBConnector dbconnector)
+    public TimeCardAccountant(TimeCardDBConnector dbconnector)
     {
         this.dbconnector=dbconnector;
     }

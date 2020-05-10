@@ -39,6 +39,24 @@ abstract public class MySqlConnector implements DBConnector, SaleReceiptsDBConne
     }*/
 
     @Override
+    public double getEmployeeDues(Employee employee) throws Exception {
+        String query = "SELECT * FROM EmployeeTable WHERE EmployeeID = "+employee.getEmployeeId();
+        PreparedStatement preStat = connection.prepareStatement(query);
+        ResultSet resultSet = preStat.executeQuery();
+        resultSet.next();
+        return resultSet.getDouble("DueCharges");
+    }
+
+    @Override
+    public double setEmployeeDues(Employee employee,double dueAmount) throws Exception {
+        String query = "UPDATE EmployeeTable SET DueCharges = "+dueAmount+" WHERE EmployeeID = "+employee.getEmployeeId();
+        PreparedStatement preStat = connection.prepareStatement(query);
+        ResultSet resultSet = preStat.executeQuery();
+        resultSet.next();
+        return resultSet.getDouble("DueCharges");
+    }
+
+    @Override
     public void insertSalesReceipt(SalesReceipt salesReceipt, Employee employee) throws SQLException
     {
         String query = "INSERT INTO SalesReceiptTable VALUES (?, ?, ?)";

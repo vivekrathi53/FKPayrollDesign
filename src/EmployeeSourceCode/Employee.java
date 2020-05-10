@@ -12,4 +12,6 @@ public interface Employee
     public void setJoiningDate(Timestamp   joiningDate);
     public PaymentMode getPaymentMode() ;
     public void setPaymentMode(PaymentMode paymentMode);
+    public void deductFees(double amount) throws Exception;
+
 }

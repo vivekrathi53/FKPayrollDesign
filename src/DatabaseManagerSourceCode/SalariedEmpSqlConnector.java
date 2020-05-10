@@ -22,12 +22,13 @@ public class SalariedEmpSqlConnector extends MySqlConnector
     @Override
     public void insertEmployee(Employee employee) throws SQLException
     {
-        String query = "INSERT INTO EmployeeTable  VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO EmployeeTable  VALUES (?, ?, ?, ?, ?)";
         PreparedStatement preStat = connection.prepareStatement(query);
         preStat.setString(1, employee.getName());
         preStat.setString(2, employee.getEmployeeId());
         preStat.setTimestamp(3,employee.getJoiningDate());
         preStat.setInt(4,convertPaymentMode(employee.getPaymentMode()));
+        preStat.setDouble(5,0);
         preStat.executeUpdate();
         insertSalariedEmployee((SalariedEmployee) employee);
 
