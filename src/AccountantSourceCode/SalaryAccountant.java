@@ -12,8 +12,7 @@ import static java.lang.Math.min;
 public class SalaryAccountant implements Accountant
 {
     private SalariedEmpSqlConnector dbconnector;
-    private int dailyWorkhours;
-    private double overtimeMultiple;
+
     public SalaryAccountant(SalariedEmpSqlConnector dbconnector)
     {
         this.dbconnector=dbconnector;
