@@ -49,23 +49,38 @@ public class HourlyEmpSqlConnector extends MySqlConnector implements TimeCardDBC
 
 
 
-    public void insertTimeCard(TimeCard timeCard,Employee employee) throws SQLException {
+    public void insertTimeCard(TimeCard timeCard,String employeeID) throws SQLException {
         String query = "INSERT INTO TimeCardTable VALUES (?, ?, ?, ?)";
         PreparedStatement preStat = connection.prepareStatement(query);
-        preStat.setString(1, employee.getEmployeeId());
+        preStat.setString(1, employeeID);
         preStat.setTimestamp(2, timeCard.getSubmitDate());
         preStat.setTimestamp(3, timeCard.getStartTimestamp());
         preStat.setTimestamp(4,timeCard.getEndTimestamp());
-
+        preStat.executeUpdate();
     }
 
 
+    @Override
+    public Employee getEmployee(String employeeId) throws Exception {
+        String query = "SELECT * FROM EmployeeTable WHERE EmployeeID='"+employeeId+"'";
+        PreparedStatement preStat = connection.prepareStatement(query);
+        ResultSet resultSet = preStat.executeQuery();
+        query = "SELECT * FROM EmployeeHourlySalaryTable WHERE EmployeeId='"+employeeId+"'";
+        preStat = connection.prepareStatement(query);
+        ResultSet resultSet2 = preStat.executeQuery();
+        if(resultSet.next()&&resultSet2.next())
+        {
+            return new HourlyEmployee(resultSet.getString("Name"),resultSet.getString("EmployeeID"),
+                    resultSet.getTimestamp("JoiningDate"),resultSet2.getDouble("HourlyRate"),getPaymentMode(resultSet.getInt("PaymentMode")));
+        }
+        else
+            throw new Exception("NO SUCH EMPLOYEE");
+    }
 
 
-
-
-    public ArrayList<TimeCard> getEmployeeTimeCard(Employee employee) throws Exception {
-        String query = "SELECT * FROM TimeCardTable WHERE EmployeeID = "+employee.getEmployeeId();
+    @Override
+    public ArrayList<TimeCard> getEmployeeTimeCard(String employeeID) throws Exception {
+        String query = "SELECT * FROM TimeCardTable WHERE EmployeeID = '"+employeeID+"'";
         PreparedStatement preStat = connection.prepareStatement(query);
         ResultSet resultSet = preStat.executeQuery();
         ArrayList<TimeCard > timeCardsList = new ArrayList<>();
@@ -105,7 +120,7 @@ public class HourlyEmpSqlConnector extends MySqlConnector implements TimeCardDBC
 
 
     private double getEmployeeHourlyRate(String employeeID) throws SQLException {
-        String query = "SELECT * FROM EmployeeHourlySalaryTable WHERE EmployeeID = "+employeeID;
+        String query = "SELECT * FROM EmployeeHourlySalaryTable WHERE EmployeeID = '"+employeeID+"'";
         PreparedStatement preStat = connection.prepareStatement(query);
         ResultSet resultSet = preStat.executeQuery();
         resultSet.next();

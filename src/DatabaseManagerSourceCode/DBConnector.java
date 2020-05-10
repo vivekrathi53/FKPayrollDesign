@@ -11,6 +11,7 @@ import java.util.ArrayList;
 public interface DBConnector
 {
     public void insertEmployee(Employee e) throws Exception;
+    public Employee getEmployee(String employeeId) throws Exception;
     //public void deleteEmployee(Employee e) throws Exception;
     public void insertSalesReceipt(SalesReceipt salesReceipt, Employee employee) throws Exception;
     //public void insertTimeCard(TimeCard timeCard, Employee employee) throws  Exception;

@@ -47,7 +47,7 @@ public class HourlyPayAccountant implements Accountant
         return (endSeconds-startSeconds)/3600;
     }
     private double estimatePay(HourlyEmployee employee) throws Exception {
-        ArrayList<TimeCard> timeCardList = dbconnector.getEmployeeTimeCard(employee);
+        ArrayList<TimeCard> timeCardList = dbconnector.getEmployeeTimeCard(employee.getEmployeeId());
         double hourlyrate = dbconnector.getEmployeeRate(employee);
         double totalAmount=0;
         for (TimeCard timeCard: timeCardList)

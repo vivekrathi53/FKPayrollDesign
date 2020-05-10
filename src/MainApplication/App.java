@@ -2,17 +2,16 @@ package MainApplication;
 
 import AccountantSourceCode.CommissionAccountant;
 import AccountantSourceCode.HourlyPayAccountant;
+import AccountantSourceCode.Miscellaneous.TimeCard;
 import AccountantSourceCode.PaymentRelatedClasses.BankTransfer;
 import AccountantSourceCode.SalaryAccountant;
 import AccountantSourceCode.TimeCardAccountant;
 import DatabaseManagerSourceCode.HourlyEmpSqlConnector;
 import DatabaseManagerSourceCode.SalariedEmpSqlConnector;
+import DatabaseManagerSourceCode.TimeCardDBConnector;
 import EmployeeSourceCode.*;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -62,44 +61,58 @@ public class App  {
             System.out.println("6. Insert a service charge on employee");
             System.out.println("7. Run Payroll For Today");
             int ty=sc.nextInt();
-            if(ty==1)
+            try
             {
-                insertNewHourlyEmployee(sc,hourlyEmpSqlConnector);
-            }
-            else if(ty==2)
-            {
-                insertNewSalaryEmployee(sc,salariedEmpSqlConnector);
-            }
-            else if(ty==3)
-            {
-                //insertNewTimeCard(sc,hourlyEmpSqlConnector);
-            }
-            else if(ty==4)
-            {
+                if(ty==1)
+                {
+                    insertNewHourlyEmployee(sc,hourlyEmpSqlConnector);
+                }
+                else if(ty==2)
+                {
+                    insertNewSalaryEmployee(sc,salariedEmpSqlConnector);
+                }
+                else if(ty==3)
+                {
+                    insertNewTimeCard(sc,hourlyEmpSqlConnector);
+                }
+                else if(ty==4)
+                {
 
-            }
-            else if(ty==5)
-            {
+                }
+                else if(ty==5)
+                {
 
-            }
-            else if(ty==6)
-            {
+                }
+                else if(ty==6)
+                {
 
-            }
-            else if(ty==7)
-            {
+                }
+                else if(ty==7)
+                {
 
+                }
+            }
+            catch (Exception exception)
+            {
+                exception.printStackTrace();
             }
         }
     }
 
-    private static void insertNewTimeCard(Scanner sc, HourlyEmpSqlConnector hourlyEmpSqlConnector)
-    {
-        System.out.println("Enter ");
+    private static void insertNewTimeCard(Scanner sc, TimeCardDBConnector timeCardDBConnector) throws Exception {
+        System.out.println("Enter Submission Date");
+        Timestamp submitDate = inputTimestamp(sc);
+        System.out.println("Enter Start Date");
+        Timestamp startDate = inputTimestamp(sc);
+        System.out.println("Enter End Date");
+        Timestamp endDate = inputTimestamp(sc);
+        System.out.println("Enter EmployeeID");
+        String empId = sc.next();
+        HourlyEmployee employee = (HourlyEmployee) timeCardDBConnector.getEmployee(empId);
+        employee.submitTimeCardToAccountant(new TimeCard(submitDate,startDate,endDate));
     }
 
-    private static void insertNewSalaryEmployee(Scanner sc, SalariedEmpSqlConnector salariedEmpSqlConnector)
-    {
+    private static void insertNewSalaryEmployee(Scanner sc, SalariedEmpSqlConnector salariedEmpSqlConnector) throws SQLException {
         //public SalariedEmployee(String name, String employeeId, Timestamp joiningDate, double monthlySalary, PaymentMode paymentMode)
         System.out.println("Enter name of employee");
         String empName = sc.next();
@@ -109,13 +122,7 @@ public class App  {
         Timestamp joiningDate = inputTimestamp(sc);
         System.out.println("Enter Monthly Salary");
         double monthlyRate = sc.nextDouble();
-        try {
-            salariedEmpSqlConnector.insertEmployee(new SalariedEmployee(empName,empID,joiningDate,monthlyRate,new BankTransfer()));
-            // currently by default payment mode is BankTransfer
-        } catch (SQLException throwables)
-        {
-            throwables.printStackTrace();
-        }
+        salariedEmpSqlConnector.insertEmployee(new SalariedEmployee(empName,empID,joiningDate,monthlyRate,new BankTransfer()));
     }
 
     private static Timestamp inputTimestamp(Scanner sc)
@@ -134,8 +141,7 @@ public class App  {
         String seconds = sc.next();
         return Timestamp.valueOf(year+"-"+month+"-"+day+" "+hours+":"+minutes+":"+seconds);
     }
-    private static void insertNewHourlyEmployee(Scanner sc, HourlyEmpSqlConnector hourlyEmpSqlConnector)
-    {
+    private static void insertNewHourlyEmployee(Scanner sc, HourlyEmpSqlConnector hourlyEmpSqlConnector) throws SQLException {
         //public HourlyEmployee(String name, String employeeId, Timestamp joiningDate, double hourlyRate)
         System.out.println("Enter name of employee");
         String empName = sc.next();
@@ -145,10 +151,6 @@ public class App  {
         Timestamp joiningDate = inputTimestamp(sc);
         System.out.println("Enter Hourly Rate");
         double hourlyRate = sc.nextDouble();
-        try {
-            hourlyEmpSqlConnector.insertEmployee(new HourlyEmployee(empName,empID,joiningDate,hourlyRate, new BankTransfer()));
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        hourlyEmpSqlConnector.insertEmployee(new HourlyEmployee(empName,empID,joiningDate,hourlyRate, new BankTransfer()));
     }
 }

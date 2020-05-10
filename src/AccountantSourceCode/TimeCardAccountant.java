@@ -13,7 +13,7 @@ public class TimeCardAccountant implements Accountant
     }
     public void submitTimeCard(HourlyEmployee hourlyEmployee,TimeCard timeCard) throws Exception {
         // call DBconnector
-        dbconnector.insertTimeCard(timeCard,hourlyEmployee);
+        dbconnector.insertTimeCard(timeCard,hourlyEmployee.getEmployeeId());
     }
     public TimeCardAccountant(TimeCardDBConnector dbconnector)
     {

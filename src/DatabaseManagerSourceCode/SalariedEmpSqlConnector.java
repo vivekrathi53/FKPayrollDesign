@@ -34,6 +34,23 @@ public class SalariedEmpSqlConnector extends MySqlConnector
 
     }
 
+    @Override
+    public Employee getEmployee(String employeeId) throws Exception {
+        String query = "SELECT * FROM EmployeeTable WHERE EmployeeID='"+employeeId+"'";
+        PreparedStatement preStat = connection.prepareStatement(query);
+        ResultSet resultSet = preStat.executeQuery();
+        query = "SELECT * FROM EmployeeMonthlySalaryTable WHERE EmployeeId='"+employeeId+"'";
+        preStat = connection.prepareStatement(query);
+        ResultSet resultSet2 = preStat.executeQuery();
+        if(resultSet.next()&&resultSet2.next())
+        {
+            return new SalariedEmployee(resultSet.getString("Name"),resultSet.getString("EmployeeID"),
+                    resultSet.getTimestamp("JoiningDate"),resultSet2.getDouble("MonthlySalary"),getPaymentMode(resultSet.getInt("PaymentMode")));
+        }
+        else
+            throw new Exception("NO SUCH EMPLOYEE");
+    }
+
     /*@Override
     public void deleteEmployee(Employee e) throws SQLException {
 
@@ -72,7 +89,7 @@ public class SalariedEmpSqlConnector extends MySqlConnector
     }
 
     private double getEmployeeMonthlyRate(String employeeID) throws SQLException {
-        String query = "SELECT * FROM EmployeeMonthlySalaryTable WHERE EmployeeID = "+employeeID;
+        String query = "SELECT * FROM EmployeeMonthlySalaryTable WHERE EmployeeID = '"+employeeID+"'";
         PreparedStatement preStat = connection.prepareStatement(query);
         ResultSet resultSet = preStat.executeQuery();
         resultSet.next();

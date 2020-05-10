@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 public interface TimeCardDBConnector
 {
-    public void insertTimeCard(TimeCard timeCard, Employee employee) throws Exception;
-    public ArrayList<TimeCard> getEmployeeTimeCard(Employee employee) throws Exception;
+    public Employee getEmployee(String employeeId) throws Exception;
+    public void insertTimeCard(TimeCard timeCard, String employeeID) throws Exception;
+    public ArrayList<TimeCard> getEmployeeTimeCard(String employeeID) throws Exception;
 }
