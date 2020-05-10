@@ -6,8 +6,7 @@ import AccountantSourceCode.SalaryAccountant;
 import AccountantSourceCode.TimeCardAccountant;
 import DatabaseManagerSourceCode.HourlyEmpSqlConnector;
 import DatabaseManagerSourceCode.SalariedEmpSqlConnector;
-import EmployeeSourceCode.HourlyEmployee;
-import EmployeeSourceCode.SalariedEmployee;
+import EmployeeSourceCode.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

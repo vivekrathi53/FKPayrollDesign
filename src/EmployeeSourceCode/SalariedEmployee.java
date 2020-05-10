@@ -24,6 +24,11 @@ public class SalariedEmployee implements Employee
         this.paymentMode = paymentMode;
     }
 
+    @Override
+    public void deductFees(double amount) throws Exception {
+        salaryAccountant.deduceFeeCharges(this, amount);
+    }
+
 
     public SalariedEmployee(String name, String employeeId, Timestamp joiningDate, double monthlySalary, PaymentMode paymentMode) {
         this.name = name;

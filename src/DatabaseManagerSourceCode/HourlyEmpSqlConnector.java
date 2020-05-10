@@ -9,7 +9,7 @@ import EmployeeSourceCode.*;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class HourlyEmpSqlConnector extends MySqlConnector
+public class HourlyEmpSqlConnector extends MySqlConnector implements TimeCardDBConnector
 {
     String url;
     Connection connection;
@@ -21,12 +21,13 @@ public class HourlyEmpSqlConnector extends MySqlConnector
     @Override
     public void insertEmployee(Employee employee) throws SQLException
     {
-        String query = "INSERT INTO EmployeeTable  VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO EmployeeTable  VALUES (?, ?, ?, ?, ?)";
         PreparedStatement preStat = connection.prepareStatement(query);
         preStat.setString(1, employee.getName());
         preStat.setString(2, employee.getEmployeeId());
         preStat.setTimestamp(3,employee.getJoiningDate());
         preStat.setInt(4,convertPaymentMode(employee.getPaymentMode()));
+        preStat.setDouble(5,0);
         preStat.executeUpdate();
         insertHourlyEmployee((HourlyEmployee)employee);
     }
@@ -55,6 +56,7 @@ public class HourlyEmpSqlConnector extends MySqlConnector
         preStat.setTimestamp(2, timeCard.getSubmitDate());
         preStat.setTimestamp(3, timeCard.getStartTimestamp());
         preStat.setTimestamp(4,timeCard.getEndTimestamp());
+
     }
 
 

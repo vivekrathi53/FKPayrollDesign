@@ -19,4 +19,6 @@ public interface DBConnector
     public double getEmployeeRate(Employee employee) throws Exception;
     public Timestamp getEmployeeJoiningDate(Employee employee) throws Exception;
     public ArrayList<Employee> getAllEmployees() throws Exception;
+    public double getEmployeeDues(Employee employee) throws Exception;
+    public double setEmployeeDues(Employee employee,double dueAmount) throws Exception;
 }

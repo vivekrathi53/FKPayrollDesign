@@ -1,11 +1,11 @@
 package AccountantSourceCode.ServiceFeeClasses;
+
 import EmployeeSourceCode.Employee;
 
 import java.sql.Timestamp;
 
-public class FestivalFee implements ServiceFee
-{
-    private double feeRate;// per day
+public class UnionFee implements ServiceFee{
+    public double feeRate;// perday
 
     @Override
     public double generateFee(Timestamp startDate, Timestamp endDate, Employee employee) {

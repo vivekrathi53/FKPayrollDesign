@@ -27,7 +27,11 @@ public class SalaryAccountant implements Accountant
         return new PayCheque(amount , employee.getEmployeeId(), issueDate);
     }
 
-
+    public void deduceFeeCharges(Employee employee,double amount) throws Exception {
+        double dues = dbconnector.getEmployeeDues(employee);
+        dues+=amount;
+        dbconnector.setEmployeeDues(employee,dues);
+    }
 
 
     private long getHoursDifference(Timestamp startTime,Timestamp endTime)
@@ -48,16 +52,22 @@ public class SalaryAccountant implements Accountant
         Calendar c = Calendar.getInstance();
         int monthMaxDays = c.getActualMaximum(Calendar.DAY_OF_MONTH);
         double monthlySalary = dbconnector.getEmployeeRate(employee);
+        double dueCharges =  dbconnector.getEmployeeDues(employee);
         long totalDays = min(getDaysDifference(dbconnector.getEmployeeJoiningDate(employee),new Timestamp(System.currentTimeMillis())),monthMaxDays);
-        return (totalDays*monthlySalary)/monthMaxDays;
+        return (totalDays*monthlySalary)/monthMaxDays - dueCharges;
     }
     public void payEmployee(Employee employee) throws Exception {
         // make employee payment
         double amount = estimatePay((SalariedEmployee)employee);
-        if(amount!=0)
+        if(amount>0)
         {
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             employee.getPaymentMode().pay(generatePayCheque(employee,amount,timestamp));
+            dbconnector.setEmployeeDues(employee,0);
+        }
+        else if(amount<0)
+        {
+            throw new Exception("Negative pay!! Large Dues of employee");
         }
     }
     public void doDailyWork() throws Exception {
@@ -66,7 +76,7 @@ public class SalaryAccountant implements Accountant
         Calendar calendar = Calendar.getInstance();
         int monthMaxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
         Date date = calendar.getTime();
-        if(date.getDay()==monthMaxDays)
+        if(date.getDate()==monthMaxDays)
         {
             for(Employee e: arrayList)
                 payEmployee(e);
