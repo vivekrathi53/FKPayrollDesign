@@ -28,11 +28,12 @@ public class HourlyEmployee implements Employee
     }
 
 
-    public HourlyEmployee(String name, String employeeId, Timestamp joiningDate, double hourlyRate) {
+    public HourlyEmployee(String name, String employeeId, Timestamp joiningDate, double hourlyRate,PaymentMode paymentMode) {
         this.name = name;
         this.employeeId = employeeId;
         this.joiningDate = joiningDate;
         this.hourlyRate = hourlyRate;
+        this.paymentMode = paymentMode;
     }
 
     public Timestamp getJoiningDate() {
@@ -91,8 +92,7 @@ public class HourlyEmployee implements Employee
         HourlyEmployee.hourlyPayAccountant = hourlyPayAccountant;
     }
 
-    public int submitTimeCardToAccountant(TimeCard timeCard)
-    {
+    public int submitTimeCardToAccountant(TimeCard timeCard) throws Exception {
         if(timeCardAccountant.checkTimeCard(this,timeCard)) {
             timeCardAccountant.submitTimeCard(this,timeCard);
             // accepted

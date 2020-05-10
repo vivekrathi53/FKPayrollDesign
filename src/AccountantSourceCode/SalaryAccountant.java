@@ -76,7 +76,7 @@ public class SalaryAccountant implements Accountant
         Calendar calendar = Calendar.getInstance();
         int monthMaxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
         Date date = calendar.getTime();
-        if(date.getDate()==monthMaxDays)
+        if((date.getDay()==5&&date.getDate()+2>=monthMaxDays)&&(date.getDate()==monthMaxDays))
         {
             for(Employee e: arrayList)
                 payEmployee(e);
