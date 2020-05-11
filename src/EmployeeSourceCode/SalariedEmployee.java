@@ -15,6 +15,7 @@ public class SalariedEmployee implements Employee
     private static CommissionAccountant commissionAccountant;
     private static SalaryAccountant salaryAccountant;
     private PaymentMode paymentMode;
+    private double commissionRate=2.0;
 
     public PaymentMode getPaymentMode() {
         return paymentMode;
@@ -27,6 +28,16 @@ public class SalariedEmployee implements Employee
     @Override
     public void deductFees(double amount) throws Exception {
         salaryAccountant.deduceFeeCharges(this, amount);
+    }
+
+    @Override
+    public double getCommissionRate() {
+        return commissionRate;
+    }
+
+    @Override
+    public void setCommissionRate(double commissionRate) {
+        this.commissionRate = commissionRate;
     }
 
 

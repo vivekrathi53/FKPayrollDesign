@@ -20,18 +20,26 @@ import java.util.Scanner;
 public class App  {
     public static void main(String[] args)
     {
-
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter Your Mysql Port");
+        int port = sc.nextInt();
+        System.out.println("Enter Your Mysql Username");
+        String username = sc.next();
+        System.out.println("Enter Your Mysql Password");
+        String password = sc.next();
         try {
             Class.forName("com.mysql.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+            System.exit(1);
         }
         Connection connection=null;
-        String url = "jdbc:mysql://127.0.0.1:3306/FKPayrollDesign";
+        String url = "jdbc:mysql://127.0.0.1:"+port+"/FKPayrollDesign";
         try {
-            connection = DriverManager.getConnection(url,"vivek","password");
+            connection = DriverManager.getConnection(url,username,password);
         } catch (SQLException e) {
             e.printStackTrace();
+            System.exit(1);
         }
         SalariedEmpSqlConnector salariedEmpSqlConnector = new SalariedEmpSqlConnector(connection);
         HourlyEmpSqlConnector hourlyEmpSqlConnector = new HourlyEmpSqlConnector(connection);
@@ -46,7 +54,7 @@ public class App  {
         SalariedEmployee.setSalaryAccountant(salaryAccountant);
         EmployeeUnion employeeUnion = new EmployeeUnion();
 
-        Scanner sc = new Scanner(System.in);
+
         while(true)
         {
             System.out.println("Select one of Below Choice : ");
@@ -149,7 +157,7 @@ public class App  {
         //public SalariedEmployee(String name, String employeeId, Timestamp joiningDate, double monthlySalary, PaymentMode paymentMode)
         System.out.println("Enter name of employee");
         String empName = sc.next();
-        System.out.println("Enter ID of employee");
+        System.out.println("Enter ID of employee must start with 'S' ");
         String empID = sc.next();
         System.out.println("Enter Joining Date TimeStamp Format");
         Timestamp joiningDate = inputTimestamp(sc);
@@ -178,7 +186,7 @@ public class App  {
         //public HourlyEmployee(String name, String employeeId, Timestamp joiningDate, double hourlyRate)
         System.out.println("Enter name of employee");
         String empName = sc.next();
-        System.out.println("Enter ID of employee");
+        System.out.println("Enter ID of employee must start with 'H'");
         String empID = sc.next();
         System.out.println("Enter Joining Date TimeStamp Format");
         Timestamp joiningDate = inputTimestamp(sc);

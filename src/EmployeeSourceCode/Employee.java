@@ -9,6 +9,8 @@ public interface Employee
 {
     public void setName(String Name);
     public String getName();
+    public double getCommissionRate();
+    public void setCommissionRate(double commissionRate);
     public String getEmployeeId();
     public void setEmployeeId(String employeeId);
     public Timestamp  getJoiningDate();

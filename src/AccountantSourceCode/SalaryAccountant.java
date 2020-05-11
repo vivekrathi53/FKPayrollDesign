@@ -1,12 +1,16 @@
 package AccountantSourceCode;
 
+import AccountantSourceCode.Miscellaneous.SalesReceipt;
 import EmployeeSourceCode.*;
 import DatabaseManagerSourceCode.*;
 import AccountantSourceCode.PaymentRelatedClasses.*;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
+
 import static java.lang.Math.min;
 
 public class SalaryAccountant implements Accountant
@@ -46,6 +50,18 @@ public class SalaryAccountant implements Accountant
         return totalHours/24;
     }
 
+    private double getCommissionAmount(Employee employee) throws Exception {
+        ArrayList<SalesReceipt> salesReceiptList = dbconnector.getEmployeeSalesReceipt(employee);
+        double commissionMoney = 0;
+        for(SalesReceipt salesReceipt:salesReceiptList)
+        {
+            if(getDaysDifference(salesReceipt.getSaleDate(),new Timestamp(System.currentTimeMillis()))<=7)
+            {
+                commissionMoney+=(salesReceipt.getAmountOfSale()*employee.getCommissionRate())/100;
+            }
+        }
+        return commissionMoney;
+    }
 
     private double estimatePay(SalariedEmployee employee) throws Exception {
         Calendar c = Calendar.getInstance();
@@ -75,12 +91,25 @@ public class SalaryAccountant implements Accountant
         Calendar calendar = Calendar.getInstance();
         int monthMaxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
         Date date = calendar.getTime();
+        String todayDay = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(date.getTime());
         if((date.getDay()==5&&date.getDate()+2>=monthMaxDays)&&(date.getDate()==monthMaxDays))
         {
             for(Employee e: arrayList)
                 payEmployee(e);
         }
+        else if(todayDay.equals("Friday"))
+        {
+            for(Employee employee : arrayList)
+            {
+                double commissionPay = getCommissionAmount(employee);
+                if(commissionPay>0)
+                {
+                    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                    employee.getPaymentMode().pay(generatePayCheque(employee,commissionPay,timestamp));
+                }
+            }
+        }
         else
-            System.out.println("Today Is Not Last Day Of Month :P");
+            System.out.println("Today Is Not Last Day Of Month :P and Also not friday");
     }
 }

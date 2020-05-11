@@ -1,5 +1,6 @@
 package AccountantSourceCode;
 
+import AccountantSourceCode.Miscellaneous.SalesReceipt;
 import AccountantSourceCode.Miscellaneous.TimeCard;
 import AccountantSourceCode.PaymentRelatedClasses.PayCheque;
 import DatabaseManagerSourceCode.HourlyEmpSqlConnector;
@@ -20,6 +21,7 @@ public class HourlyPayAccountant implements Accountant
     private HourlyEmpSqlConnector dbconnector;
     private int dailyWorkhours;
     private double overtimeMultiple;
+
     public HourlyPayAccountant(HourlyEmpSqlConnector dbconnector,int dailyWorkhours,double overtimeMultiple)
     {
         this.dbconnector=dbconnector;
@@ -46,18 +48,41 @@ public class HourlyPayAccountant implements Accountant
         long endSeconds = endTime.getTime()/1000;
         return (endSeconds-startSeconds)/3600;
     }
+    private long getDaysDifference(Timestamp joiningTime,Timestamp currentTime)
+    {
+        long totalHours = getHoursDifference(joiningTime,currentTime);
+        return totalHours/24;
+    }
+    private double getCommissionAmount(Employee employee) throws Exception {
+        ArrayList<SalesReceipt> salesReceiptList = dbconnector.getEmployeeSalesReceipt(employee);
+        double commissionMoney = 0;
+        for(SalesReceipt salesReceipt:salesReceiptList)
+        {
+            if(getDaysDifference(salesReceipt.getSaleDate(),new Timestamp(System.currentTimeMillis()))<=7)
+            {
+                commissionMoney+=(salesReceipt.getAmountOfSale()*employee.getCommissionRate())/100;
+            }
+        }
+        return commissionMoney;
+    }
+
     private double estimatePay(HourlyEmployee employee) throws Exception {
         ArrayList<TimeCard> timeCardList = dbconnector.getEmployeeTimeCard(employee.getEmployeeId());
         double hourlyrate = dbconnector.getEmployeeRate(employee);
         double totalAmount=0;
         for (TimeCard timeCard: timeCardList)
         {
+            if(getDaysDifference(timeCard.getStartTimestamp(),timeCard.getEndTimestamp())>7)
+            {
+                continue;
+            }
             long hoursWorked = getHoursDifference(timeCard.getStartTimestamp(),timeCard.getEndTimestamp());
             totalAmount += min(hoursWorked,dailyWorkhours)*hourlyrate;
             totalAmount += max(hoursWorked-dailyWorkhours,0)*hourlyrate*overtimeMultiple;
         }
         double dueCharges = dbconnector.getEmployeeDues(employee);
-        return totalAmount - dueCharges;
+        double commissionPay = getCommissionAmount(employee);
+        return totalAmount - dueCharges + commissionPay;
     }
     public void payEmployee(Employee employee) throws Exception {
         // make employee payment
@@ -75,12 +100,15 @@ public class HourlyPayAccountant implements Accountant
     }
     public void doDailyWork() throws Exception {
         // check which employee needed to we paid today and pay them
+
         ArrayList<Employee> arrayList = dbconnector.getAllEmployees();
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
         String todayDay = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(date.getTime());
-        if(todayDay=="Friday")
+
+        if(todayDay.equals("Friday"))
         {
+            System.out.println(arrayList.size());
             for(Employee e : arrayList)
                 payEmployee(e);
         }

@@ -86,7 +86,7 @@ public class HourlyEmpSqlConnector implements TimeCardDBConnector, SaleReceiptsD
         ArrayList<TimeCard > timeCardsList = new ArrayList<>();
         while(resultSet.next())
         {
-            timeCardsList.add(new TimeCard(resultSet.getTimestamp("submitDate"),resultSet.getTimestamp("startTimeStmap"),resultSet.getTimestamp("endTimeStamp")));
+            timeCardsList.add(new TimeCard(resultSet.getTimestamp("submitDate"),resultSet.getTimestamp("startTimeStamp"),resultSet.getTimestamp("endTimeStamp")));
         }
         return timeCardsList;
     }
@@ -112,8 +112,8 @@ public class HourlyEmpSqlConnector implements TimeCardDBConnector, SaleReceiptsD
         while(resultSet.next())
         {
             String employeeID = resultSet.getString("EmployeeID");
-            if(employeeID.charAt(1)=='H')
-                employeeList.add(new SalariedEmployee(resultSet.getString("Name"),resultSet.getString("EmployeeID"),resultSet.getTimestamp("JoiningDate"),getEmployeeHourlyRate(employeeID),getPaymentMode(resultSet.getInt("PaymentMode"))));
+            if(employeeID.charAt(0)=='H')
+                employeeList.add(new HourlyEmployee(resultSet.getString("Name"),resultSet.getString("EmployeeID"),resultSet.getTimestamp("JoiningDate"),getEmployeeHourlyRate(employeeID),getPaymentMode(resultSet.getInt("PaymentMode"))));
         }
         return employeeList;
     }
@@ -182,7 +182,7 @@ public class HourlyEmpSqlConnector implements TimeCardDBConnector, SaleReceiptsD
 
     @Override
     public ArrayList<SalesReceipt> getEmployeeSalesReceipt(Employee employee) throws Exception {
-        String query = "SELECT * FROM SalesReceiptTable WHERE EmployeeID = "+employee.getEmployeeId();
+        String query = "SELECT * FROM SalesReceiptTable WHERE EmployeeID = '"+employee.getEmployeeId()+"'";
         PreparedStatement preStat = connection.prepareStatement(query);
         ResultSet resultSet = preStat.executeQuery();
         ArrayList<SalesReceipt> saleReceiptList = new ArrayList<>();

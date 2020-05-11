@@ -9,6 +9,7 @@ public class HourlyEmployee implements Employee
     private String employeeId;
     private Timestamp joiningDate;
     private double hourlyRate;
+    private double commissionRate=2.0;
     private static TimeCardAccountant timeCardAccountant;
     private static CommissionAccountant commissionAccountant;
     private static HourlyPayAccountant hourlyPayAccountant;
@@ -20,6 +21,16 @@ public class HourlyEmployee implements Employee
 
     public void setPaymentMode(PaymentMode paymentMode) {
         this.paymentMode = paymentMode;
+    }
+
+    @Override
+    public double getCommissionRate() {
+        return commissionRate;
+    }
+
+    @Override
+    public void setCommissionRate(double commissionRate) {
+        this.commissionRate = commissionRate;
     }
 
     @Override

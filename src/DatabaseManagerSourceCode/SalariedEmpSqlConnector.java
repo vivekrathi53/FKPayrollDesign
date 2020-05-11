@@ -150,7 +150,7 @@ public class SalariedEmpSqlConnector  implements SaleReceiptsDBConnector, DBConn
 
     @Override
     public ArrayList<SalesReceipt> getEmployeeSalesReceipt(Employee employee) throws Exception {
-        String query = "SELECT * FROM SalesReceiptTable WHERE EmployeeID = "+employee.getEmployeeId();
+        String query = "SELECT * FROM SalesReceiptTable WHERE EmployeeID = '"+employee.getEmployeeId()+"'";
         PreparedStatement preStat = connection.prepareStatement(query);
         ResultSet resultSet = preStat.executeQuery();
         ArrayList<SalesReceipt> saleReceiptList = new ArrayList<>();
